@@ -5,9 +5,9 @@ jmap-plus-converter
 
 `jmap-plus-converter` 是 [jmap-plus](https://github.com/alei817927/jmap-plus) 项目的地图数据转化器，基于 [GeoTools](http://www.geotools.org/) 项目开发，生成 `JS` 数据。
 # 功能
-* 生成单区域数据和复合区域数据
-* 生成点数据，作为 `Marker` 使用
-* 生成线数据
+* 生成单区域数据和复合区域数据，参考[example3](http://www.u396.com/wp-content/jmap-plus/examples/example-3.html)。
+* 生成点数据，作为 `Marker`，参考[example4](http://www.u396.com/wp-content/jmap-plus/examples/example-4.html)。
+* 生成线数据，一般可以表示路线，参考[example5](http://www.u396.com/wp-content/jmap-plus/examples/example-5.html)。
 
 # 配置
 ```
@@ -90,5 +90,5 @@ $ mvn dependency:copy-dependencies -DoutputDirectory=lib
 下载依赖库到lib目录下面
 * 运行工具
 ```bash
-java -cp lib/*.jar -jar dist/map-data-converter.jar
+$ java -cp lib/*.jar -jar dist/map-data-converter.jar
 ```
