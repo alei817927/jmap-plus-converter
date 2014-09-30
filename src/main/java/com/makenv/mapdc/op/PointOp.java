@@ -5,10 +5,7 @@ import java.util.List;
 
 import org.opengis.feature.simple.SimpleFeature;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.makenv.mapdc.Globals;
-import com.makenv.mapdc.util.FileUtil;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
@@ -21,8 +18,11 @@ import com.vividsolutions.jts.geom.Point;
  */
 public class PointOp extends AbstractShapeOp {
 
+	List<Marker> markers;
+
 	public PointOp(int id, String shapefile) {
 		super(id, shapefile);
+		markers = new ArrayList<>();
 	}
 
 	@Override
@@ -30,30 +30,31 @@ public class PointOp extends AbstractShapeOp {
 		if (features.isEmpty()) {
 			return;
 		}
-		int _countryNameIndex = Globals.getConfig().getShapeFile().getCountryNameIndex();
-		List<Marker> _markers = new ArrayList<>();
+		int _nameIndex = Globals.getConfig().getShapeFile().getPointNameIndex();
 		for (SimpleFeature _feature : features) {
 			Geometry shape = (Geometry) _feature.getDefaultGeometry();
 			if (shape instanceof Point) {
 				Point _point = (Point) shape;
 				Coordinate _coordinate = _point.getCoordinate();
-				String _name = String.valueOf(_feature.getAttribute(_countryNameIndex));
+				String _name = String.valueOf(_feature.getAttribute(_nameIndex));
 				double[] _latLon = new double[] { _coordinate.y, _coordinate.x };
 				Marker _marker = new Marker(_latLon, _name);
-				_markers.add(_marker);
+				markers.add(_marker);
 			} else {
 				// TODO errorLog
 				return;
 			}
 		}
-		ObjectMapper _objectMapper = new ObjectMapper();
-		String _content = "";
-		try {
-			_content = _objectMapper.writeValueAsString(_markers);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
-		FileUtil.writeFile(Globals.getConfig().getjVectorMap().getMarkFile(), "var markersData=" + _content + ";");
+	}
+
+	@Override
+	public Object getMapData() {
+		return markers;
+	}
+
+	@Override
+	public OpType getOpType() {
+		return OpType.POINT;
 	}
 
 	static class Marker {

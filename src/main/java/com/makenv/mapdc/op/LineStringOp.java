@@ -2,12 +2,14 @@ package com.makenv.mapdc.op;
 
 import java.awt.geom.Point2D.Double;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.opengis.feature.simple.SimpleFeature;
 
 import com.makenv.mapdc.Globals;
-import com.makenv.mapdc.data.VectorMapData;
+import com.makenv.mapdc.data.LineData;
+import com.makenv.mapdc.util.MapDCUtil;
 import com.makenv.mapdc.util.StringUtil;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
@@ -23,11 +25,11 @@ import com.vividsolutions.jts.geom.LineString;
 public class LineStringOp extends AbstractShapeOp {
 
 	private Envelope envelope;
-	private VectorMapData mapData;
+	private LineData mapData;
 
-	public LineStringOp(int id, String shapefile, VectorMapData mapData) {
+	public LineStringOp(int id, String shapefile) {
 		super(id, shapefile);
-		this.mapData = mapData;
+		mapData = new LineData();
 	}
 
 	@Override
@@ -35,13 +37,16 @@ public class LineStringOp extends AbstractShapeOp {
 		if (features.isEmpty()) {
 			return;
 		}
-		envelope = mergeAndProjEnvelope();
+		// line 依赖于区域的范围
+		String _polyFile = Globals.getConfig().getShapeFile().getLineDependPolygonFile();
+		List<SimpleFeature> _polygonFeatures = MapDCUtil.readShpFile(_polyFile, charset);
+		envelope = mergeAndProjEnvelope(_polygonFeatures);
 		processPathsData();
 	}
 
 	private void processPathsData() {
 		int _precision = Globals.getConfig().getjVectorMap().getPrecision();
-		int _countryNameIndex = Globals.getConfig().getShapeFile().getCountryNameIndex();
+		int _nameIndex = Globals.getConfig().getShapeFile().getLineNameIndex();
 		double _scale = (envelope.getMaxX() - envelope.getMinX()) / Globals.getConfig().getjVectorMap().getWidth();
 		Double _dst;
 		Map<String, Integer> _names = new HashMap<>();
@@ -55,18 +60,18 @@ public class LineStringOp extends AbstractShapeOp {
 				Coordinate[] _coordinates = _shape.getCoordinates();
 				int j = 0, _all = _coordinates.length;
 				for (Coordinate _coordinate : _coordinates) {
-					if ((j++) % _lineInterval == 0 || j == _all) {
-						_dst = projection(_coordinate.x, _coordinate.y);
-						_sb.append(precision((_dst.getX() - envelope.getMinX()) / _scale, _precision));
+					if (_lineInterval == 0 || j++ % _lineInterval == 0 || j == _all) {
+						_dst = MapDCUtil.projection(_coordinate.x, _coordinate.y);
+						_sb.append(MapDCUtil.precision((_dst.getX() - envelope.getMinX()) / _scale, _precision));
 						_sb.append(",");
-						_sb.append(precision((envelope.getMaxY() - _dst.getY()) / _scale, _precision));
+						_sb.append(MapDCUtil.precision((envelope.getMaxY() - _dst.getY()) / _scale, _precision));
 						_sb.append(" ");
 					}
 				}
 
 				Map<String, Object> _pathInfo = new HashMap<>();
 				_pathInfo.put("path", _sb.toString());
-				String _name = String.valueOf(_feature.getAttribute(_countryNameIndex));
+				String _name = String.valueOf(_feature.getAttribute(_nameIndex));
 				int _theNameIndex = 0;
 				if (_names.containsKey(_name)) {
 					_theNameIndex = _names.get(_name);
@@ -84,5 +89,15 @@ public class LineStringOp extends AbstractShapeOp {
 			}
 		}
 
+	}
+
+	@Override
+	public OpType getOpType() {
+		return OpType.LINESTRING;
+	}
+
+	@Override
+	public Object getMapData() {
+		return mapData;
 	}
 }

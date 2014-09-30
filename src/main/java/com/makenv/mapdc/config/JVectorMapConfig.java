@@ -3,31 +3,15 @@ package com.makenv.mapdc.config;
 import com.makenv.mapdc.util.MapDCUtil;
 
 public class JVectorMapConfig {
-	private String nameCountry;
-	private String nameLanguage;
 	private int width;
 	private int left;
 	private int top;
-	private String pathFile;
-	private String markFile;
+	private String polygonFile;
+	private String pointFile;
+	private String complexPolygonFile;
+	private String lineFile;
 	private int precision;
 	private float distance;
-
-	public String getNameCountry() {
-		return nameCountry;
-	}
-
-	public void setNameCountry(String nameCountry) {
-		this.nameCountry = nameCountry;
-	}
-
-	public String getNameLanguage() {
-		return nameLanguage;
-	}
-
-	public void setNameLanguage(String nameLanguage) {
-		this.nameLanguage = nameLanguage;
-	}
 
 	public int getWidth() {
 		return width;
@@ -53,20 +37,36 @@ public class JVectorMapConfig {
 		this.top = top;
 	}
 
-	public String getPathFile() {
-		return pathFile;
+	public String getPolygonFile() {
+		return polygonFile;
 	}
 
-	public void setPathFile(String pathFile) {
-		this.pathFile = pathFile;
+	public void setPolygonFile(String polygonFile) {
+		this.polygonFile = polygonFile;
 	}
 
-	public String getMarkFile() {
-		return markFile;
+	public String getPointFile() {
+		return pointFile;
 	}
 
-	public void setMarkFile(String markFile) {
-		this.markFile = markFile;
+	public void setPointFile(String pointFile) {
+		this.pointFile = pointFile;
+	}
+
+	public String getComplexPolygonFile() {
+		return complexPolygonFile;
+	}
+
+	public void setComplexPolygonFile(String complexPolygonFile) {
+		this.complexPolygonFile = complexPolygonFile;
+	}
+
+	public String getLineFile() {
+		return lineFile;
+	}
+
+	public void setLineFile(String lineFile) {
+		this.lineFile = lineFile;
 	}
 
 	public int getPrecision() {

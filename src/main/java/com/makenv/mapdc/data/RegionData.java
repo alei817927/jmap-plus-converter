@@ -5,33 +5,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.makenv.mapdc.Globals;
-
 /**
  * 
  * @description: 转换后的地图数据对象
  * @author alei
  * @date 2014年9月17日
  */
-public class VectorMapData {
+public class RegionData {
 	private List<InsetsData> insets;
 	private Map<String, Object> paths;
-	private Map<Integer, Object> lines;
 	private double height;
 	private double width;
 	private Map<String, Object> projection;
-	private List<String> lineNames;
 
-	public VectorMapData() {
+	public RegionData() {
 		insets = new ArrayList<>();
 		paths = new HashMap<>();
-		lines = new HashMap<>();
 		projection = new HashMap<>();
-		lineNames = new ArrayList<>();
-	}
-
-	public void addLineName(String lineName) {
-		lineNames.add(lineName);
 	}
 
 	public void addProjection(String key, Object proj) {
@@ -40,10 +30,6 @@ public class VectorMapData {
 
 	public void addPath(String key, Object path) {
 		paths.put(key, path);
-	}
-
-	public void addLine(Object path) {
-		lines.put(Globals.getCounterAndPlus("lineNames"), path);
 	}
 
 	public void addInsets(InsetsData inset) {
@@ -76,14 +62,6 @@ public class VectorMapData {
 
 	public void setWidth(double width) {
 		this.width = width;
-	}
-
-	public Map<Integer, Object> getLines() {
-		return lines;
-	}
-
-	public List<String> getLineNames() {
-		return lineNames;
 	}
 
 }
